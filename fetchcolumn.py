@@ -1,7 +1,7 @@
 import pymssql
 
 # Connect to the Sybase ASE server
-conn = pymssql.connect(server='your_server', user='your_user', password='your_password', database='your_database')
+conn = pymssql.connect(server='your_server', user='your_user', password='your_password')
 
 # Create a cursor to execute SQL queries
 cursor = conn.cursor()
@@ -13,7 +13,19 @@ databases = cursor.fetchall()
 # Iterate over each database and perform the search
 for db in databases:
     db_name = db[0]
-    query = f"USE {db_name}; SELECT t.name AS table_name, c.name AS column_name FROM syscolumns c JOIN systypes t ON c.usertype = t.usertype WHERE t.name = 'data' AND c.id IN (SELECT id FROM sysobjects WHERE type = 'U' AND name NOT LIKE 'sys%')"
+
+    # Connect to the specific database
+    conn.select_db(db_name)
+
+    # Query to find tables with a column of type 'data'
+    query = """
+        SELECT t.name AS table_name, c.name AS column_name
+        FROM syscolumns c
+        JOIN systypes t ON c.usertype = t.usertype
+        WHERE t.name = 'data' AND c.id IN (SELECT id FROM sysobjects WHERE type = 'U' AND name NOT LIKE 'sys%')
+    """
+
+    # Execute the query
     cursor.execute(query)
     results = cursor.fetchall()
 
