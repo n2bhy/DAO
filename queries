@@ -12,10 +12,12 @@ AND object_name(idx.id) = 'your_table_name';
 clustered
 sybase
 SELECT col.name AS column_name
-FROM syscolumns col
-JOIN sysindexes idx ON col.id = idx.id AND col.colid = idx.key1
-WHERE idx.indid = 1  -- indid 1 indicates the clustered index
-AND OBJECT_NAME(col.id) = 'your_table_name';
+FROM sysindexes idx
+JOIN sysobjects obj ON idx.id = obj.id
+JOIN syscolumns col ON idx.id = col.id
+WHERE idx.indid = 1 -- indid 1 indicates the clustered index
+AND OBJECT_NAME(idx.id) = 'your_table_name';
+
 
 
 
