@@ -1,0 +1,32 @@
+sybase query 
+
+SELECT col.name AS column_name
+FROM sysindexes idx
+JOIN sysindexkeys idxkeys ON idx.id = idxkeys.id AND idx.indid = idxkeys.indid
+JOIN syscolumns col ON idxkeys.id = col.id AND idxkeys.colid = col.colid
+WHERE idx.indid > 0
+AND idx.status2 & 2 = 2 
+AND object_name(idx.id) = 'your_table_name';
+
+
+clustered
+sybase
+SELECT col.name AS column_name
+FROM sysindexes idx
+JOIN sysindexkeys idxkeys ON idx.id = idxkeys.id AND idx.indid = idxkeys.indid
+JOIN syscolumns col ON idxkeys.id = col.id AND idxkeys.colid = col.colid
+WHERE idx.indid > 0
+AND idx.status2 & 2 = 2
+AND OBJECT_NAME(idx.id) = 'your_table_name';
+
+
+
+mssql
+SELECT col.name AS column_name
+FROM sys.indexes idx
+JOIN sys.index_columns idxcols ON idx.object_id = idxcols.object_id AND idx.index_id = idxcols.index_id
+JOIN sys.columns col ON idxcols.object_id = col.object_id AND idxcols.column_id = col.column_id
+WHERE idx.is_primary_key = 1
+AND idx.type_desc = 'CLUSTERED'
+AND OBJECT_NAME(idx.object_id) = 'your_table_name';
+
