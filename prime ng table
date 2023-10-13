@@ -29,3 +29,25 @@
         </tr>
     </ng-template>
 </p-table>
+
+
+import { Component, VERSION } from '@angular/core';
+import { TableModule } from 'primeng/table';
+@Component({
+  selector: 'my-app',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent {
+  headers = ['Application', 'Security', 'Quality', 'Score'];
+  filterOptions: any = {};
+  data: any[];
+
+  ngOnInit(): void {
+      this.data = [{"Application":"1","Security":"6","Quality":"2", "Score":"12"},{"Application":1,'Security':"6",'Quality':"2", "Score":"12"}]; // Assuming the response is in the format compatible with your table
+      this.headers.forEach(header => {
+        this.filterOptions[header] = [...Array.from(new Set(this.data.map(item => item[header])))]; // Extracting unique values for filtering
+      });
+    }
+}
+
