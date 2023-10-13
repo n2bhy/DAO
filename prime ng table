@@ -1,0 +1,31 @@
+<p-table [value]="yourData" [reorderableColumns]="true" [resizableColumns]="true" [paginator]="true"
+    [rows]="10" [responsive]="true" [exportFilename]="exportFileName" [stateStorage]="'local'">
+    <ng-template pTemplate="header">
+        <tr>
+            <th field="field1" [filter]="true" filterPlaceholder="Filter1"></th>
+            <th field="field2" [filter]="true" filterPlaceholder="Filter2"></th>
+            <!-- Add more columns as needed -->
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-rowData>
+        <tr>
+            <td>{{rowData.field1}}</td>
+            <td>{{rowData.field2}}</td>
+            <!-- Add more cells as needed -->
+        </tr>
+    </ng-template>
+</p-table>
+
+<p-table [value]="data" [reorderableColumns]="true" [resizableColumns]="true" [paginator]="true"
+    [rows]="10" [responsive]="true" [exportFilename]="exportFileName" [stateStorage]="'local'">
+    <ng-template pTemplate="header">
+        <tr>
+            <th *ngFor="let header of headers">{{ header }}</th> <!-- Replace 'headers' with your array of header titles -->
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-rowData>
+        <tr>
+            <td *ngFor="let item of rowData">{{ item }}</td>
+        </tr>
+    </ng-template>
+</p-table>
