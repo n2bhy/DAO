@@ -31,3 +31,40 @@ WHERE idx.is_primary_key = 1
 AND idx.type_desc = 'CLUSTERED'
 AND OBJECT_NAME(idx.object_id) = 'your_table_name';
 
+
+import pandas as pd
+import datacompy
+
+# Sample dataframes (replace these with your actual dataframes)
+ms_df = pd.DataFrame({'index_keys': [1, 2, 3, 4], 'index_name': ['index_a', 'index_b', 'index_c', 'index_d']})
+syb_df = pd.DataFrame({'index_keys': [2, 3, 4, 5], 'index_name': ['index_b', 'index_c', 'index_d', 'index_e']})
+
+# Comparing the dataframes
+compare = datacompy.Compare(
+    ms_df,
+    syb_df,
+    join_columns='index_keys',
+    abs_tol=0,
+    rel_tol=0,
+    df1_name='MSSQL',
+    df2_name='Sybase'
+)
+
+# Getting comparison results
+comparison_result = compare.highlight_all()
+
+# Filter the comparison results to get the required tables
+common_indices = comparison_result.query('comp_result == "="')[['index_keys', 'index_name_x', 'index_name_y']]
+unique_syb_indices = comparison_result.query('comp_result == "df2_unq"')[['index_keys', 'index_name_y']]
+unique_syb_indices.rename(columns={'index_name_y': 'syb_index_name'}, inplace=True)
+unique_syb_indices['mssql_index_name'] = '-'
+
+unique_ms_indices = comparison_result.query('comp_result == "df1_unq"')[['index_keys', 'index_name_x']]
+unique_ms_indices.rename(columns={'index_name_x': 'mssql_index_name'}, inplace=True)
+unique_ms_indices['syb_index_name'] = '-'
+
+# Writing to Excel
+with pd.ExcelWriter('output.xlsx') as writer:
+    common_indices.to_excel(writer, sheet_name='Common_Indices', index=False)
+    unique_syb_indices.to_excel(writer, sheet_name='Unique_Sybase_Indices', index=False)
+    unique_ms_indices.to_excel(writer, sheet_name='Unique_MSSQL_Indices', index=False)
