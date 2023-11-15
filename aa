@@ -1,0 +1,26 @@
+#!/bin/bash
+
+# Set variables
+server="your_server"
+database="your_database"
+table="your_table"
+username="your_username"
+password="your_password"
+output_folder="/path/to/output_folder"
+
+# Set batch size
+batch_size=1000
+
+# Calculate number of batches
+total_rows=$(echo "SELECT COUNT(*) FROM ${table}" | isql -U"${username}" -P"${password}" -S"${server}" -b)
+num_batches=$((total_rows / batch_size + 1))
+
+# Use bcp in a loop to export data in batches
+for ((i = 1; i <= num_batches; i++)); do
+    start_row=$(( (i - 1) * batch_size + 1 ))
+    output_file="${output_folder}/batch_${i}.txt"
+    
+    bcp "${database}..${table}" out "${output_file}" -U"${username}" -P"${password}" -c -t, -b"${batch_size}" -F 2 -L"${start_row}","${batch_size}"
+done
+
+echo "Export completed."
