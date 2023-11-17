@@ -1,41 +1,20 @@
 <build>
     <plugins>
-        <!-- Create an uber JAR (fat JAR) -->
+        <!-- Create a JAR with dependencies -->
         <plugin>
             <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-shade-plugin</artifactId>
-            <version>3.2.4</version>
-            <executions>
-                <execution>
-                    <phase>package</phase>
-                    <goals>
-                        <goal>shade</goal>
-                    </goals>
-                    <configuration>
-                        <transformers>
-                            <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                <manifestEntries>
-                                    <!-- Add AspectJ Weaver as a Java agent -->
-                                    <Premain-Class>org.aspectj.weaver.loadtime.Agent</Premain-Class>
-                                    <Can-Retransform-Classes>true</Can-Retransform-Classes>
-                                    <Can-Redefine-Classes>true</Can-Redefine-Classes>
-                                </manifestEntries>
-                            </transformer>
-                        </transformers>
-                        <!-- Include dependencies in the shaded JAR -->
-                        <filters>
-                            <filter>
-                                <artifact>*:*</artifact>
-                                <excludes>
-                                    <exclude>META-INF/*.SF</exclude>
-                                    <exclude>META-INF/*.DSA</exclude>
-                                    <exclude>META-INF/*.RSA</exclude>
-                                </excludes>
-                            </filter>
-                        </filters>
-                    </configuration>
-                </execution>
-            </executions>
+            <artifactId>maven-jar-plugin</artifactId>
+            <version>3.1.1</version>
+            <configuration>
+                <archive>
+                    <manifestEntries>
+                        <!-- Add AspectJ Weaver as a Java agent -->
+                        <Premain-Class>org.aspectj.weaver.loadtime.Agent</Premain-Class>
+                        <Can-Retransform-Classes>true</Can-Retransform-Classes>
+                        <Can-Redefine-Classes>true</Can-Redefine-Classes>
+                    </manifestEntries>
+                </archive>
+            </configuration>
         </plugin>
     </plugins>
 </build>
