@@ -1,20 +1,35 @@
-<build>
-    <plugins>
-        <!-- Create a JAR with dependencies -->
+
         <plugin>
             <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-jar-plugin</artifactId>
-            <version>3.1.1</version>
-            <configuration>
-                <archive>
-                    <manifestEntries>
-                        <!-- Add AspectJ Weaver as a Java agent -->
-                        <Premain-Class>org.aspectj.weaver.loadtime.Agent</Premain-Class>
-                        <Can-Retransform-Classes>true</Can-Retransform-Classes>
-                        <Can-Redefine-Classes>true</Can-Redefine-Classes>
-                    </manifestEntries>
-                </archive>
-            </configuration>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <version>1.8</version>
+            <executions>
+                <execution>
+                    <id>generate-class</id>
+                    <phase>generate-sources</phase>
+                    <goals>
+                        <goal>run</goal>
+                    </goals>
+                    <configuration>
+                        <tasks>
+                            <!-- Generate the Java class source file -->
+                            <echo file="${project.build.directory}/generated-sources/com/example/GeneratedClass.java">
+                                <![CDATA[
+                                package com.example;
+
+                                public class GeneratedClass {
+                                    public void someMethod() {
+                                        // Your generated code using the property value
+                                        String propertyValue = "${your.property.key}";
+                                        System.out.println("Property value: " + propertyValue);
+                                        // Add the rest of your code here
+                                    }
+                                }
+                                ]]>
+                            </echo>
+                        </tasks>
+                    </configuration>
+                </execution>
+            </executions>
         </plugin>
-    </plugins>
-</build>
+
